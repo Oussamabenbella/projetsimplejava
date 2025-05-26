@@ -8,8 +8,7 @@ RUN mvn dependency:go-offline
 
 # Copier les sources et compiler
 COPY src ./src
-COPY .mvn ./.mvn 2>/dev/null || true
-COPY mvnw ./mvnw 2>/dev/null || true
+# Les fichiers .mvn et mvnw sont facultatifs dans ce projet
 RUN mvn package -DskipTests
 
 # Stage d'exécution
