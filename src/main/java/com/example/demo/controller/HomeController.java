@@ -3,8 +3,8 @@ package com.example.demo.controller;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.servlet.ModelAndView;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -17,8 +17,8 @@ public class HomeController {
     
     // Rediriger la racine vers l'index.html
     @GetMapping("/")
-    public String home() {
-        return "index";
+    public ModelAndView home() {
+        return new ModelAndView("redirect:/index.html");
     }
     
     // Endpoint API distinct pour vérifier l'état
