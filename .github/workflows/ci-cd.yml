@@ -49,18 +49,19 @@ jobs:
     if: github.event_name == 'push' && github.ref == 'refs/heads/master'
     
     steps:
-    - name: Deploy to Render
-      # Utiliser le hook de déploiement Render
+    - name: Deployment Information
       run: |
-        curl -X POST \
-          -H "Content-Type: application/json" \
-          -d '{"key": "${{ secrets.RENDER_DEPLOY_HOOK_KEY }}"}' \
-          ${{ secrets.RENDER_DEPLOY_HOOK_URL }}
-      env:
-        RENDER_DEPLOY_HOOK_URL: ${{ secrets.RENDER_DEPLOY_HOOK_URL }}
-        RENDER_DEPLOY_HOOK_KEY: ${{ secrets.RENDER_DEPLOY_HOOK_KEY }}
-
-    - name: Verify Deployment
-      run: |
-        echo "Deployment triggered successfully"
-        echo "Please check deployment status at https://dashboard.render.com"
+        echo "=== DÉPLOIEMENT SUR RENDER ==="
+        echo "⚠️ CONFIGURATION REQUISE ⚠️"
+        echo "Pour activer le déploiement automatique, configurez les secrets suivants dans GitHub :"
+        echo "1. RENDER_DEPLOY_HOOK_URL : URL du webhook de déploiement Render"
+        echo "2. RENDER_DEPLOY_HOOK_KEY : Clé d'authentification pour le webhook"
+        echo ""
+        echo "Vous pouvez obtenir ces valeurs depuis votre tableau de bord Render :"
+        echo "- Allez dans votre service web sur Render"
+        echo "- Cliquez sur 'Settings' > 'Deploy Hooks'"
+        echo "- Créez un nouveau hook et copiez l'URL générée"
+        echo ""
+        echo "Une fois ces secrets configurés, le déploiement se fera automatiquement"
+        echo "Pour le moment, vous devez déployer manuellement sur Render"
+        echo "Visitez : https://dashboard.render.com pour déployer votre application"
