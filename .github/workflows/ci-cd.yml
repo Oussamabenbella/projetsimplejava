@@ -49,19 +49,36 @@ jobs:
     if: github.event_name == 'push' && github.ref == 'refs/heads/master'
     
     steps:
-    - name: Deployment Information
+    - name: Check for Render deploy secrets
+      id: check_secrets
       run: |
-        echo "=== DÉPLOIEMENT SUR RENDER ==="
-        echo "⚠️ CONFIGURATION REQUISE ⚠️"
-        echo "Pour activer le déploiement automatique, configurez les secrets suivants dans GitHub :"
-        echo "1. RENDER_DEPLOY_HOOK_URL : URL du webhook de déploiement Render"
-        echo "2. RENDER_DEPLOY_HOOK_KEY : Clé d'authentification pour le webhook"
+        if [[ -n "${{ secrets.RENDER_DEPLOY_HOOK_URL }}" && -n "${{ secrets.RENDER_DEPLOY_HOOK_KEY }}" ]]; then
+          echo "render_secrets_available=true" >> $GITHUB_OUTPUT
+        else
+          echo "render_secrets_available=false" >> $GITHUB_OUTPUT
+        fi
+
+    - name: Deploy to Render
+      if: steps.check_secrets.outputs.render_secrets_available == 'true'
+      run: |
+        echo "=== DÉPLOIEMENT VERS RENDER ==="
+        curl -X POST \
+          -H "Content-Type: application/json" \
+          -d '{"key": "${{ secrets.RENDER_DEPLOY_HOOK_KEY }}"}' \
+          ${{ secrets.RENDER_DEPLOY_HOOK_URL }}
+        echo "🚀 Déploiement déclenché avec succès!"
+        echo "Vérifiez le statut sur https://dashboard.render.com"
+
+    - name: Missing configuration
+      if: steps.check_secrets.outputs.render_secrets_available != 'true'
+      run: |
+        echo "⚠️ CONFIGURATION INCOMPLÈTE ⚠️"
+        echo "Les secrets Render ne sont pas configurés. Suivez ces instructions :"
+        echo "1. Allez dans votre service web sur Render"
+        echo "2. Cliquez sur 'Settings' > 'Deploy Hooks'"
+        echo "3. Créez un nouveau hook et copiez l'URL générée"
+        echo "4. Ajoutez les secrets dans GitHub : Settings > Secrets > Actions"
+        echo "   - RENDER_DEPLOY_HOOK_URL : URL complète du webhook"
+        echo "   - RENDER_DEPLOY_HOOK_KEY : Partie après ?key= dans l'URL"
         echo ""
-        echo "Vous pouvez obtenir ces valeurs depuis votre tableau de bord Render :"
-        echo "- Allez dans votre service web sur Render"
-        echo "- Cliquez sur 'Settings' > 'Deploy Hooks'"
-        echo "- Créez un nouveau hook et copiez l'URL générée"
-        echo ""
-        echo "Une fois ces secrets configurés, le déploiement se fera automatiquement"
-        echo "Pour le moment, vous devez déployer manuellement sur Render"
-        echo "Visitez : https://dashboard.render.com pour déployer votre application"
+        echo "Pour le moment, déployez manuellement : https://dashboard.render.com"
