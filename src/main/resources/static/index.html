@@ -3,125 +3,523 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>API de Destinations de Voyage</title>
+    <title>TravelAPI - Destinations de Voyage</title>
+    <!-- Bootstrap 5 -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&family=Montserrat:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <!-- AOS Animation Library -->
+    <link href="https://cdn.jsdelivr.net/npm/aos@2.3.4/dist/aos.css" rel="stylesheet">
     <style>
+        :root {
+            --primary: #2c3e50;
+            --secondary: #3498db;
+            --accent: #e74c3c;
+            --light: #ecf0f1;
+            --dark: #2c3e50;
+            --success: #27ae60;
+            --info: #00bcd4;
+            --gradient-primary: linear-gradient(135deg, #3498db, #8e44ad);
+            --gradient-secondary: linear-gradient(135deg, #2ecc71, #3498db);
+        }
+        
         body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            font-family: 'Poppins', sans-serif;
             background-color: #f8f9fa;
-            padding-top: 2rem;
+            color: var(--dark);
+            overflow-x: hidden;
         }
-        .header {
-            background: linear-gradient(to right, #4a89dc, #5cb85c);
-            padding: 2rem 0;
+        
+        h1, h2, h3, h4, h5, h6 {
+            font-family: 'Montserrat', sans-serif;
+            font-weight: 600;
+        }
+        
+        .bg-gradient-primary {
+            background: var(--gradient-primary);
+        }
+        
+        .hero-section {
+            background: var(--gradient-primary);
             color: white;
-            margin-bottom: 2rem;
-            border-radius: 0.5rem;
+            padding: 6rem 0 8rem;
+            position: relative;
+            overflow: hidden;
+            border-radius: 0 0 50% 50% / 100px;
         }
-        .card {
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-            transition: all 0.3s;
+        
+        .hero-section::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image: url('https://images.unsplash.com/photo-1488646953014-85cb44e25828?ixlib=rb-4.0.3&auto=format&fit=crop&w=1350&q=80');
+            background-size: cover;
+            background-position: center;
+            opacity: 0.2;
+            z-index: 0;
+        }
+        
+        .hero-content {
+            position: relative;
+            z-index: 1;
+        }
+        
+        .display-3 {
+            font-weight: 700;
+            letter-spacing: -1px;
             margin-bottom: 1.5rem;
         }
+        
+        .lead {
+            font-size: 1.25rem;
+            font-weight: 400;
+            margin-bottom: 2rem;
+        }
+        
+        .btn-glow {
+            position: relative;
+            z-index: 1;
+            overflow: hidden;
+            transition: all 0.5s ease;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+        }
+        
+        .btn-glow:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3);
+        }
+        
+        .btn-glow::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(255, 255, 255, 0.1);
+            transform: translateX(-100%);
+            transition: transform 0.6s ease;
+            z-index: -1;
+        }
+        
+        .btn-glow:hover::after {
+            transform: translateX(0);
+        }
+        
+        .card {
+            border: none;
+            border-radius: 15px;
+            overflow: hidden;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+            transition: all 0.4s ease;
+            height: 100%;
+        }
+        
         .card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+            transform: translateY(-10px);
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.15);
         }
-        .footer {
-            margin-top: 3rem;
-            padding: 1.5rem 0;
-            background-color: #343a40;
+        
+        .card-title {
+            font-weight: 600;
+            margin-bottom: 1rem;
+            color: var(--primary);
+        }
+        
+        .card-icon {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            margin-bottom: 1.5rem;
+            background: var(--gradient-secondary);
             color: white;
         }
-        .api-link {
-            background-color: #4a89dc;
+        
+        .feature-img {
+            height: 200px;
+            object-fit: cover;
+            border-top-left-radius: 15px;
+            border-top-right-radius: 15px;
+        }
+        
+        .api-section {
+            padding: 5rem 0;
+            background-color: white;
+        }
+        
+        .api-section .card {
+            background-color: var(--light);
+        }
+        
+        pre.code-block {
+            border-radius: 10px;
+            background-color: #272822;
+            color: #f8f8f2;
+            padding: 1.5rem;
+            overflow-x: auto;
+            font-size: 0.9rem;
+        }
+        
+        .api-btn {
+            display: inline-flex;
+            align-items: center;
+            padding: 0.75rem 1.5rem;
+            background: var(--gradient-primary);
             color: white;
-            padding: 0.5rem 1rem;
-            border-radius: 0.25rem;
+            border-radius: 30px;
             text-decoration: none;
-            transition: background-color 0.3s;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 10px rgba(52, 152, 219, 0.3);
         }
-        .api-link:hover {
-            background-color: #3a6bac;
+        
+        .api-btn:hover {
+            box-shadow: 0 6px 15px rgba(52, 152, 219, 0.4);
+            transform: translateY(-2px);
             color: white;
+        }
+        
+        .api-btn i {
+            margin-right: 8px;
+        }
+        
+        .destination-card {
+            border-radius: 15px;
+            overflow: hidden;
+            position: relative;
+            height: 300px;
+            margin-bottom: 30px;
+        }
+        
+        .destination-img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.5s ease;
+        }
+        
+        .destination-card:hover .destination-img {
+            transform: scale(1.1);
+        }
+        
+        .destination-overlay {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            padding: 20px;
+            background: linear-gradient(to top, rgba(0, 0, 0, 0.8), transparent);
+            color: white;
+            transition: all 0.3s ease;
+        }
+        
+        .destination-card:hover .destination-overlay {
+            padding-bottom: 40px;
+        }
+        
+        .destination-title {
+            font-size: 1.25rem;
+            font-weight: 600;
+            margin-bottom: 5px;
+        }
+        
+        .destination-info {
+            display: flex;
+            align-items: center;
+            font-size: 0.9rem;
+            margin-bottom: 5px;
+        }
+        
+        .destination-info i {
+            margin-right: 5px;
+            color: var(--info);
+        }
+        
+        .rating {
+            color: #ffc107;
+        }
+        
+        footer {
+            background-color: var(--dark);
+            color: white;
+            padding: 3rem 0 2rem;
+            position: relative;
+        }
+        
+        .footer-links a {
+            color: rgba(255, 255, 255, 0.7);
+            margin-right: 1.5rem;
+            text-decoration: none;
+            transition: color 0.3s ease;
+            display: inline-flex;
+            align-items: center;
+        }
+        
+        .footer-links a:hover {
+            color: white;
+        }
+        
+        .footer-links a i {
+            margin-right: 5px;
+        }
+        
+        .social-icon {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background-color: rgba(255, 255, 255, 0.1);
+            color: white;
+            margin-right: 10px;
+            transition: all 0.3s ease;
+        }
+        
+        .social-icon:hover {
+            background-color: var(--secondary);
+            transform: translateY(-3px);
+        }
+        
+        .footer-copyright {
+            padding-top: 2rem;
+            margin-top: 2rem;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            font-size: 0.9rem;
+            color: rgba(255, 255, 255, 0.6);
+        }
+        
+        @media (max-width: 768px) {
+            .hero-section {
+                padding: 4rem 0 6rem;
+                border-radius: 0 0 25% 25% / 50px;
+            }
+            
+            .display-3 {
+                font-size: 2.5rem;
+            }
         }
     </style>
 </head>
 <body>
-    <div class="container">
-        <div class="header text-center p-4">
-            <h1 class="display-4">API de Destinations de Voyage</h1>
-            <p class="lead">Une API RESTful pour gérer des destinations de voyage du monde entier</p>
-        </div>
-
-        <div class="row mb-4">
-            <div class="col-md-12 text-center">
-                <a href="/swagger-ui.html" class="btn btn-primary btn-lg">Explorer l'API avec Swagger UI</a>
-                <a href="/api-docs" class="btn btn-outline-secondary btn-lg ms-2">Documentation OpenAPI</a>
+    <!-- Hero Section -->
+    <section class="hero-section">
+        <div class="container hero-content text-center" data-aos="fade-up">
+            <h1 class="display-3">API de Destinations de Voyage</h1>
+            <p class="lead">Explorez le monde avec notre API RESTful pour gérer et découvrir des destinations de voyage exceptionnelles</p>
+            <div class="d-flex justify-content-center gap-3">
+                <a href="/swagger-ui.html" class="btn btn-light btn-lg btn-glow"><i class="fas fa-book"></i> Documentation API</a>
+                <a href="/api/destinations" class="btn btn-outline-light btn-lg btn-glow"><i class="fas fa-globe-americas"></i> Voir les destinations</a>
             </div>
         </div>
-
-        <div class="row">
-            <div class="col-md-4">
-                <div class="card">
-                    <div class="card-body">
-                        <h5 class="card-title">Destinations</h5>
-                        <p class="card-text">Explorez des destinations du monde entier avec des descriptions détaillées, évaluations et coûts estimés.</p>
-                        <a href="/api/destinations" class="api-link">Voir toutes les destinations</a>
+    </section>
+    
+    <!-- Features Section -->
+    <section class="py-5 mt-n5">
+        <div class="container">
+            <div class="row g-4">
+                <!-- Feature 1 -->
+                <div class="col-md-4" data-aos="fade-up" data-aos-delay="100">
+                    <div class="card p-4 text-center">
+                        <div class="card-icon mx-auto">
+                            <i class="fas fa-map-marked-alt"></i>
+                        </div>
+                        <h5 class="card-title">Destinations Mondiales</h5>
+                        <p class="card-text">Accédez à une collection de destinations à travers le monde avec descriptions détaillées et notes</p>
+                        <a href="/api/destinations" class="api-btn mt-3">
+                            <i class="fas fa-arrow-right"></i> Explorer
+                        </a>
                     </div>
                 </div>
-            </div>
-            <div class="col-md-4">
-                <div class="card">
-                    <div class="card-body">
-                        <h5 class="card-title">Recherche avancée</h5>
-                        <p class="card-text">Trouvez des destinations par pays, budget ou notes minimales pour planifier votre prochain voyage.</p>
-                        <a href="/swagger-ui.html#/destination-controller/searchDestinations" class="api-link">Essayer la recherche</a>
+                
+                <!-- Feature 2 -->
+                <div class="col-md-4" data-aos="fade-up" data-aos-delay="200">
+                    <div class="card p-4 text-center">
+                        <div class="card-icon mx-auto">
+                            <i class="fas fa-search"></i>
+                        </div>
+                        <h5 class="card-title">Recherche Avancée</h5>
+                        <p class="card-text">Filtrez par pays, budget, notes ou mots-clés pour trouver la destination parfaite</p>
+                        <a href="/swagger-ui.html#/destination-controller/searchDestinations" class="api-btn mt-3">
+                            <i class="fas fa-filter"></i> Rechercher
+                        </a>
                     </div>
                 </div>
-            </div>
-            <div class="col-md-4">
-                <div class="card">
-                    <div class="card-body">
-                        <h5 class="card-title">Santé de l'API</h5>
-                        <p class="card-text">Vérifiez l'état de l'API, les métriques et autres informations de diagnostic.</p>
-                        <a href="/actuator/health" class="api-link">Vérifier la santé</a>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <div class="row mt-4">
-            <div class="col-md-12">
-                <div class="card">
-                    <div class="card-body">
-                        <h4>Exemples d'utilisation</h4>
-                        <pre class="bg-light p-3 rounded"><code>// Récupérer toutes les destinations
-fetch('/api/destinations')
-  .then(response => response.json())
-  .then(data => console.log(data));
-
-// Rechercher des destinations dans un pays spécifique
-fetch('/api/destinations/country/France')
-  .then(response => response.json())
-  .then(data => console.log(data));</code></pre>
+                
+                <!-- Feature 3 -->
+                <div class="col-md-4" data-aos="fade-up" data-aos-delay="300">
+                    <div class="card p-4 text-center">
+                        <div class="card-icon mx-auto">
+                            <i class="fas fa-server"></i>
+                        </div>
+                        <h5 class="card-title">API Performante</h5>
+                        <p class="card-text">Interface RESTful sécurisée et rapide avec documentation Swagger complète</p>
+                        <a href="/actuator/health" class="api-btn mt-3">
+                            <i class="fas fa-heart-pulse"></i> État du service
+                        </a>
                     </div>
                 </div>
             </div>
         </div>
-    </div>
+    </section>
+    
+    <!-- Featured Destinations -->
+    <section class="py-5 bg-light">
+        <div class="container" data-aos="fade-up">
+            <div class="text-center mb-5">
+                <h2 class="fw-bold mb-3">Destinations Populaires</h2>
+                <p class="text-muted">Découvrez quelques-unes de nos meilleures destinations</p>
+            </div>
+            
+            <div class="row">
+                <!-- Destination 1 -->
+                <div class="col-md-4" data-aos="zoom-in" data-aos-delay="100">
+                    <div class="destination-card">
+                        <img src="https://images.unsplash.com/photo-1502602898657-3e91760cbb34" class="destination-img" alt="Paris">
+                        <div class="destination-overlay">
+                            <h3 class="destination-title">Paris</h3>
+                            <div class="destination-info">
+                                <i class="fas fa-map-marker-alt"></i> France
+                            </div>
+                            <div class="destination-info">
+                                <i class="fas fa-star rating"></i> 4.7
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Destination 2 -->
+                <div class="col-md-4" data-aos="zoom-in" data-aos-delay="200">
+                    <div class="destination-card">
+                        <img src="https://images.unsplash.com/photo-1597212720158-8e5dae9b201a" class="destination-img" alt="Marrakech">
+                        <div class="destination-overlay">
+                            <h3 class="destination-title">Marrakech</h3>
+                            <div class="destination-info">
+                                <i class="fas fa-map-marker-alt"></i> Maroc
+                            </div>
+                            <div class="destination-info">
+                                <i class="fas fa-star rating"></i> 4.4
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Destination 3 -->
+                <div class="col-md-4" data-aos="zoom-in" data-aos-delay="300">
+                    <div class="destination-card">
+                        <img src="https://images.unsplash.com/photo-1536098561742-ca998e48cbcc" class="destination-img" alt="Tokyo">
+                        <div class="destination-overlay">
+                            <h3 class="destination-title">Tokyo</h3>
+                            <div class="destination-info">
+                                <i class="fas fa-map-marker-alt"></i> Japon
+                            </div>
+                            <div class="destination-info">
+                                <i class="fas fa-star rating"></i> 4.9
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="text-center mt-4">
+                <a href="/api/destinations" class="btn btn-primary btn-lg btn-glow">Voir toutes les destinations</a>
+            </div>
+        </div>
+    </section>
+    
+    <!-- API Documentation Section -->
+    <section class="api-section" data-aos="fade-up">
+        <div class="container">
+            <div class="row align-items-center">
+                <div class="col-lg-6 mb-4 mb-lg-0">
+                    <h2 class="fw-bold mb-4">Utilisez notre API en quelques lignes de code</h2>
+                    <p class="mb-4">Notre API RESTful est facile à intégrer dans vos applications. Consultez la documentation complète pour explorer toutes les fonctionnalités disponibles.</p>
+                    <div class="d-flex gap-3 mb-4">
+                        <a href="/swagger-ui.html" class="api-btn">
+                            <i class="fas fa-book"></i> Documentation Swagger
+                        </a>
+                        <a href="/api-docs" class="api-btn">
+                            <i class="fas fa-file-code"></i> OpenAPI
+                        </a>
+                    </div>
+                </div>
+                
+                <div class="col-lg-6">
+                    <pre class="code-block"><code><span style="color: #75715e">// Récupérer toutes les destinations</span>
+fetch(<span style="color: #e6db74">'/api/destinations'</span>)
+  .then(<span style="color: #66d9ef">response</span> =&gt; response.json())
+  .then(<span style="color: #66d9ef">data</span> =&gt; console.log(data));
 
-    <footer class="footer mt-5">
-        <div class="container text-center">
-            <p>© 2025 API de Destinations de Voyage - Développé avec Spring Boot et PostgreSQL</p>
-            <p>
-                <a href="https://github.com/Oussamabenbella/projetsimplejava" class="text-white me-3">GitHub</a>
-                <a href="/swagger-ui.html" class="text-white me-3">API Docs</a>
-                <a href="/actuator/health" class="text-white">Statut</a>
-            </p>
+<span style="color: #75715e">// Rechercher des destinations par pays</span>
+fetch(<span style="color: #e6db74">'/api/destinations/country/France'</span>)
+  .then(<span style="color: #66d9ef">response</span> =&gt; response.json())
+  .then(<span style="color: #66d9ef">data</span> =&gt; console.log(data));
+
+<span style="color: #75715e">// Rechercher par budget maximal</span>
+fetch(<span style="color: #e6db74">'/api/destinations/price?min=0&max=1000'</span>)
+  .then(<span style="color: #66d9ef">response</span> =&gt; response.json())
+  .then(<span style="color: #66d9ef">data</span> =&gt; console.log(data));</code></pre>
+                </div>
+            </div>
+        </div>
+    </section>
+    
+    <!-- Footer -->
+    <footer>
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-4 mb-4 mb-lg-0">
+                    <h5 class="text-white mb-4">API de Destinations de Voyage</h5>
+                    <p class="text-white-50">Une solution complète pour la gestion et la découverte de destinations de voyage à travers le monde.</p>
+                </div>
+                
+                <div class="col-lg-4 mb-4 mb-lg-0">
+                    <h5 class="text-white mb-4">Liens Rapides</h5>
+                    <div class="footer-links d-flex flex-column">
+                        <a href="/"><i class="fas fa-home"></i> Accueil</a>
+                        <a href="/api/destinations"><i class="fas fa-globe"></i> Destinations</a>
+                        <a href="/swagger-ui.html"><i class="fas fa-book"></i> Documentation API</a>
+                        <a href="/actuator/health"><i class="fas fa-heart-pulse"></i> État du service</a>
+                    </div>
+                </div>
+                
+                <div class="col-lg-4">
+                    <h5 class="text-white mb-4">Suivez-nous</h5>
+                    <div class="mb-3">
+                        <a href="https://github.com/Oussamabenbella/projetsimplejava" class="social-icon"><i class="fab fa-github"></i></a>
+                        <a href="#" class="social-icon"><i class="fab fa-twitter"></i></a>
+                        <a href="#" class="social-icon"><i class="fab fa-linkedin"></i></a>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="footer-copyright text-center">
+                <p>© 2025 API de Destinations de Voyage | Développé avec <i class="fas fa-heart text-danger"></i> Spring Boot et PostgreSQL</p>
+            </div>
         </div>
     </footer>
 
+    <!-- Bootstrap JS -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <!-- AOS Animation -->
+    <script src="https://cdn.jsdelivr.net/npm/aos@2.3.4/dist/aos.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            AOS.init({
+                duration: 800,
+                easing: 'ease-in-out',
+                once: true
+            });
+        });
+    </script>
 </body>
 </html>
