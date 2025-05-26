@@ -1,5 +1,5 @@
 # Stage de build
-FROM maven:3.8.6-openjdk-17-slim as builder
+FROM maven:3.9-eclipse-temurin-17 as builder
 WORKDIR /app
 
 # Copier le fichier POM avant les sources pour optimiser le cache des dépendances
@@ -8,12 +8,12 @@ RUN mvn dependency:go-offline
 
 # Copier les sources et compiler
 COPY src ./src
-COPY .mvn ./.mvn
-COPY mvnw ./mvnw
+COPY .mvn ./.mvn 2>/dev/null || true
+COPY mvnw ./mvnw 2>/dev/null || true
 RUN mvn package -DskipTests
 
 # Stage d'exécution
-FROM eclipse-temurin:17-jre-focal
+FROM eclipse-temurin:17-jdk
 WORKDIR /app
 
 # Créer un utilisateur non-root pour exécuter l'application
