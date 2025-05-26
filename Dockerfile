@@ -1,21 +1,37 @@
-# Stage 1: Build the application
-FROM maven:3.9-eclipse-temurin-17-alpine as build
+# Stage de build
+FROM maven:3.8.6-openjdk-17-slim as builder
 WORKDIR /app
 
-# Copy the POM and source code
+# Copier le fichier POM avant les sources pour optimiser le cache des dépendances
 COPY pom.xml .
+RUN mvn dependency:go-offline
+
+# Copier les sources et compiler
 COPY src ./src
+COPY .mvn ./.mvn
+COPY mvnw ./mvnw
+RUN mvn package -DskipTests
 
-# Build the application
-RUN mvn clean package -DskipTests
-
-# Stage 2: Run the application
-FROM openjdk:17-jdk-alpine
+# Stage d'exécution
+FROM eclipse-temurin:17-jre-focal
 WORKDIR /app
 
-# Copy the jar from the build stage
-COPY --from=build /app/target/*.jar app.jar
+# Créer un utilisateur non-root pour exécuter l'application
+RUN addgroup --system --gid 1001 appgroup \
+    && adduser --system --uid 1001 --gid 1001 appuser
 
-# Run the application
-EXPOSE 8080
-ENTRYPOINT ["java", "-jar", "app.jar"]
+# Copier le JAR depuis le stage de build
+COPY --from=builder /app/target/*.jar app.jar
+
+# Configuration pour Render et autres plateformes cloud
+ENV PORT=8080
+ENV SPRING_PROFILES_ACTIVE=prod
+
+# Exposer le port de l'application
+EXPOSE ${PORT}
+
+# Définir l'utilisateur non-root
+USER appuser
+
+# Amélioration des performances JVM pour les conteneurs
+ENTRYPOINT ["java", "-XX:+UseContainerSupport", "-XX:MaxRAMPercentage=75.0", "-Djava.security.egd=file:/dev/./urandom", "-jar", "app.jar"]
